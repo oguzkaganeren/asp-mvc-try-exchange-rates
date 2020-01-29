@@ -1,0 +1,37 @@
+﻿@using CurrencyWebApplication.Models
+@{
+    ExchangeModel exchangeData = ViewBag.exchangeData;
+    CurrencyModel currencyData = ViewBag.currencyData;
+    var code = ViewBag.code;
+}
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+   
+    <thead>
+        <tr>
+            <th>
+                Currency Type
+            </th>
+            <th>
+                Value
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var prop in currencyData.GetType().GetProperties())
+            {
+                if (exchangeData.rates.GetType().GetProperty(prop.Name) != null)
+                {
+                    <tr>
+                        <th scope="row">@prop.GetValue(currencyData, null).ToString()</th>
+                        <td>@exchangeData.rates.GetType().GetProperty(prop.Name).GetValue(exchangeData.rates, null).ToString()</td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

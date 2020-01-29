@@ -1,0 +1,44 @@
+﻿@using CurrencyWebApplication.Models
+@{
+    ViewBag.Title = "Home Page";
+    ExchangeModel exchangeData = ViewBag.exchangeData;
+    CurrencyModel currencyData = ViewBag.currencyData;
+}
+
+    <div class="jumbotron">
+        <h1>Currency</h1>
+        
+        @{
+
+            var myItems = new List<SelectListItem>();
+            foreach (var prop in currencyData.GetType().GetProperties())
+            {
+                if (@exchangeData.rates.GetType().GetProperty(prop.Name) != null)
+                {
+                    myItems.Add(new SelectListItem() { Text = prop.GetValue(currencyData, null).ToString(), Value = prop.Name });
+                }
+            }
+            @Html.DropDownList("currencyList", myItems,new { @onchange = "callChangefunc(this.value)" } );
+        }
+    </div>
+    <div id="result">
+
+    </div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+       function callChangefunc(val) {
+        $.ajax({
+            url: '/Home/Result?value='+val,
+            type: 'GET',
+            success: function (response) {
+                $("#result").html("");
+                $("#result").append(response);
+            },
+            error: function (error) {
+                $(this).remove();
+                DisplayError(error.statusText);
+            }
+        });
+    }
+    </script>
